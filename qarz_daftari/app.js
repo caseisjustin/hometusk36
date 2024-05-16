@@ -1,7 +1,7 @@
 import express from "express"
 import dotenv from "dotenv"
 import authRouter from "./routes/auth.router.js"
-
+import debtRouter from "./routes/debts.router.js"
 
 dotenv.config()
 
@@ -12,6 +12,7 @@ app.use(express.json())
 
 
 app.use("/api", authRouter)
+app.use("/api/debts", debtRouter)
 
 
 

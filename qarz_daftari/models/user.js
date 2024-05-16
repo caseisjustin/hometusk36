@@ -1,6 +1,6 @@
 import { queryEx } from "../db/db.js";
 
-const createUser = async () =>{
+const createTableUsers = async () =>{
   try {
     await queryEx(`
       CREATE TABLE IF NOT EXISTS users (
@@ -14,12 +14,25 @@ const createUser = async () =>{
     console.log(err);
   }
 }
-createUser()
-export const addUser = async (email, password) =>{
+createTableUsers()
+
+export async function createUser(email, password) {
   try {
-    console.log("hello")
-    return queryEx("INSERT INTO users(email, password) VALUES($1, $2) RETURNING *", [email, password])
+    const result = await queryEx(
+      'INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *',
+      [email, password]
+    );
+    return result.rows[0];
   } catch (err) {
-    return false
+    throw false;
+  }
+}
+
+export async function getUserByEmail(email) {
+  try {
+    const result = await queryEx('SELECT * FROM users WHERE email = $1', [email]);
+    return result.rows[0];
+  } catch (err) {
+    throw false;
   }
 }

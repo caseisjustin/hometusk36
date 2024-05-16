@@ -1,23 +1,34 @@
-import { addUser } from "../models/user.js"
+import bcrypt from "bcrypt"
+import { createUser, getUserByEmail } from "../models/user.js"
 
-export const register = async (req, res) => {
+export async function register(req, res) {
+  const { email, password } = req.body;
   try {
-    const { email, password } = req.body
-    if(!email || !password){
-      res.status(400).send("Couldn't get datas!")
-      return
+    const existingUser = await getUserByEmail(email);
+    if (existingUser) {
+      return res.status(400).send("Email already registered");
     }
-
-    const check = await addUser(email, password);
-    if(!check)
-      res.status(500).send("Couldn't add user")
-    else
-      res.status(201).send(check.rows)
-  } catch (err) {
-    res.status(400).send("Couldn't get datas!")
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = await createUser(email, hashedPassword);
+    res.status(201).send(`User registered successfully ${JSON.stringify(newUser)}`);
+  } catch (error) {
+    res.status(500).send("An error occured");
   }
-};
+}
 
-export const login = async (req, res) => {
-  // Implement login logic
-};
+export async function login(req, res) {
+  const { email, password } = req.body;
+  try {
+    const user = await getUserByEmail(email);
+    if (!user) {
+      return res.status(401).send("Invalid email or password");
+    }
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return res.status(401).send("Invalid email or password")
+    }
+    res.status(200).send("Login successful");
+  } catch (error) {
+    res.status(500).send("An error occured")
+  }
+}

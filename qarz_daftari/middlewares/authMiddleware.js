@@ -1,10 +1,10 @@
 import bcrypt from "bcrypt"
-import { query } from "../db/db.js";
+import { queryEx } from "../db/db.js";
 
 async function authenticate(req, res, next) {
     const { email, password } = req.body
     try {
-        const result = await query('SELECT * FROM users WHERE email = $1', [email])
+        const result = await queryEx('SELECT * FROM users WHERE email = $1', [email])
         if (result.rows.length === 0) {
             return res.status(401).send("No user found by this email!")
         }
