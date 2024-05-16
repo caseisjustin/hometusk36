@@ -1,16 +1,25 @@
-import { query } from "../db/db.js";
+import { queryEx } from "../db/db.js";
 
-class User {
-  constructor(email, password) {
-    this.email = email;
-    this.password = password;
+const createUser = async () =>{
+  try {
+    await queryEx(`
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL
+      );
+    `);
+    console.log('User table created successfully');
+  } catch (err) {
+    console.log(err);
   }
-
-  static async createUser(email, password) {
-    // Implement user creation logic
-  }
-
-  // Add more methods as needed
 }
-
-export default new User();
+createUser()
+export const addUser = async (email, password) =>{
+  try {
+    console.log("hello")
+    return queryEx("INSERT INTO users(email, password) VALUES($1, $2) RETURNING *", [email, password])
+  } catch (err) {
+    return false
+  }
+}

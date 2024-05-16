@@ -1,7 +1,6 @@
 import express from "express"
 import dotenv from "dotenv"
-import authRouter from "./routes/auth.js"
-import { authMiddleware } from "./middlewares/auth.js"
+import authRouter from "./routes/auth.router.js"
 
 
 dotenv.config()
@@ -10,17 +9,9 @@ dotenv.config()
 const app = express()
 app.use(express.json())
 
-app.use(authMiddleware)
-
-
-
-
 
 
 app.use("/api", authRouter)
-
-
-
 
 
 

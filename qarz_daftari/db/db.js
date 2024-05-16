@@ -4,14 +4,13 @@ dotenv.config()
 
 const { Pool } = pg
 
-const {DB_user,DB_name,DB_psw,DB_port,DB_host} = process.env
-
-const pool = new Pool({
+const {DB_user, DB_name, DB_psw, DB_port, DB_host} = process.env
+export const pool = new Pool({
     user: DB_user,
-    password: DB_name,
-    host: DB_psw,
+    password: DB_psw,
+    host: DB_host,
     port: DB_port,
-    database: DB_host
+    database: DB_name
 })
 
-export const query = (text, params) => pool.query(text, params)
+export const queryEx = (text, params) => pool.query(text, params)
